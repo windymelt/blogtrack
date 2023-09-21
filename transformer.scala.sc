@@ -1,3 +1,4 @@
+#!/usr/bin/env -S scala-cli shebang -S 3
 //> using scala 3.3.0
 //> using dep "co.fs2::fs2-core::3.9.2"
 //> using dep "co.fs2::fs2-io::3.9.2"
@@ -27,6 +28,7 @@ import io.bullet.borer.derivation.ArrayBasedCodecs._
 
 val myBlogRegex = """https://blog\.3qe\.us/.+""".r
 val myBlogAuthority = """https://blog.3qe.us"""
+val statusesToExtract = Seq("Publish")
 
 val EntrySplitter = "--------\n"
 val SectionSplitter = "-----\n"
@@ -54,8 +56,12 @@ given Encoder[Entry] = deriveEncoder
 
 val dtfmt = DateTimeFormat.forPattern("MM/dd/yyyy HH:mm:ss")
 
-object Main extends IOApp {
-  val outFile = File(s"${args(0)}.cbor")
+/** はてなブログからエクスポートしたMT形式のtxtファイルから、ブログ内リンクを抽出してCBORファイルに出力するツール
+  * Usage: ./transformer.scala.sc fooBlog.export.txt
+  * Output: fooBlog.export.txt.cites.cbor
+  */
+object HatenaMTExportToCitingList extends IOApp {
+  val outFile = File(s"${args(0)}.cites.cbor")
   def run(args: List[String]) =
     Files[IO]
       .readAll(Path(args(0)))
@@ -78,7 +84,7 @@ object Main extends IOApp {
     _.split(SectionSplitter).toList match {
       case header :: content :: _ =>
         parseHeader(header).flatMap {
-          case h if h.status == "Publish" =>
+          case h if statusesToExtract.contains(h.status) =>
             Some(
               Entry(
                 s"$myBlogAuthority/${h.basename}",
@@ -132,4 +138,4 @@ object Main extends IOApp {
   }
 }
 
-Main.main(args)
+HatenaMTExportToCitingList.main(args)

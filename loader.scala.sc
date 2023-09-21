@@ -1,3 +1,4 @@
+#!/usr/bin/env -S scala-cli shebang -S 3
 //> using scala 3.3.0
 //> using dep io.bullet::borer-core::1.11.0
 //> using dep io.bullet::borer-derivation::1.11.0
