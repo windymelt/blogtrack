@@ -131,7 +131,7 @@ object HatenaMTExportToCitingList extends IOApp {
 
     val doc = browser.parseString(s)
 
-    val ls = (doc >> elementList("cite a") >> attrs("href")).flatten
+    val ls = (doc >> elementList("cite a") >> attrs("href")).flatten.view
       .filter(myBlogRegex.matches)
 
     ls.toSet
