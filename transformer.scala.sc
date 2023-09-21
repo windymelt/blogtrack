@@ -7,6 +7,7 @@
 //> using dep "net.ruippeixotog::scala-scraper::3.1.0"
 //> using dep io.bullet::borer-core::1.11.0
 //> using dep io.bullet::borer-derivation::1.11.0
+
 import java.io.File
 
 import net.ruippeixotog.scalascraper.model.Document
@@ -27,7 +28,7 @@ import io.bullet.borer.{Cbor, Encoder, Decoder}
 import io.bullet.borer.derivation.ArrayBasedCodecs._
 
 val myBlogRegex = """https://blog\.3qe\.us/.+""".r
-val myBlogAuthority = """https://blog.3qe.us"""
+val myBlogAuthority = """https://blog.3qe.us/entry"""
 val statusesToExtract = Seq("Publish")
 
 val EntrySplitter = "--------\n"
