@@ -30,7 +30,7 @@ case class Entry(
 )
 
 // TODO: use parameter
-def prepareAddQuery(e: Entry): Set[String] = e.cites map { c =>
+def prepareAddQuery(e: Entry): Set[String] = e.cites.map { c =>
   s"""
 merge (a:Article {url:"${e.url}"})
 merge (b:Article {url:"$c"})
@@ -44,6 +44,14 @@ merge (a) -[c:CITE]-> (b)
   return a,c,b
 """
 }
+
+def prepareTagQuery(e: Entry): Set[String] = e.tags.map { t =>
+  s"""merge (a:Article {url:"${e.url}"})
+merge (t:Tag {title:"${t}"})
+merge (a) -[e:TAGGING]-> (t)
+return a,e,t
+"""
+}.toSet
 
 // import neotypes.mappers.ResultMapper
 // case class Node(
@@ -97,7 +105,7 @@ object LoadCitesToNeo4j extends IOApp {
     val entriesStream = Stream
       .evalSeq(es)// さきほどのCBORロード処理からストリームを構成する
       // prepareAddQueryは引用がない場合にSeq()を返すので、これを潰すためのイディオムとして一度Chunkに入れてflatMapする
-      .map(e => fs2.Chunk.seq(prepareAddQuery(e).toSeq))
+      .map(e => fs2.Chunk.seq(prepareAddQuery(e).toSeq ++ prepareTagQuery(e).toSeq))
       .flatMap(Stream.chunk)
       // サーバにやさしくスロットリングする
       .through(throttle(Config.PPS, 1.second, Shaping))
