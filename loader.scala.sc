@@ -18,7 +18,8 @@ object Config {
 
   /** Put per Second for Neo4j (throttling factor)
     */
-  val PPS = 5 // 5 put per second
+  val PPS = 20 // 5 put per second
+  val PARALLEL = 10
 }
 
 case class Entry(
@@ -114,7 +115,7 @@ object LoadCitesToNeo4j extends IOApp {
       // evalMapでクエリを発射する。
       // Neo4Jへのリクエストは当然副作用をともなうのでIOに入れる
       // mapのかわりにevalMapするとIOを返すような操作を利用してmapした後でストリームに展開してくれる
-      .evalMap(q => IO.fromFuture(IO(q.execute.resultSummary(driver))))
+      .parEvalMap(Config.PARALLEL)(q => IO.fromFuture(IO(q.execute.resultSummary(driver))))
       // なんらかの通知があった場合は表示する
       .evalTap(s => IO.println(s.notifications().asScala.toSeq))
 
