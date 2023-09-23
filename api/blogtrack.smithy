@@ -14,6 +14,7 @@ structure BTError for BlogTrack {
     reason: String
 }
 
+@http(method: "POST", uri: "/notify")
 operation NotifyNewEntry {
     input: NotifyNewEntryInput
     output: NotifyNewEntryOutput
@@ -35,16 +36,15 @@ resource Citation {
 }
 
 @readonly
+@http(method: "GET", uri: "/cites/{citedUrl}")
 operation ReadCite {
-    input: ReadCiteInput
+    input:= {
+        @required
+        @httpLabel
+        citedUrl: Url
+    }
     output: ReadCiteOutput
     errors: [BTError]
-}
-
-@input
-structure ReadCiteInput for Citation {
-    @required
-    citedUrl: Url
 }
 
 @output
