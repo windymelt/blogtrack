@@ -1,7 +1,10 @@
 $version: "2"
-namespace io.github.windymelt.blogtrack
+namespace io.github.windymelt.blogtrack.api
 
-service BlogTrack {
+use alloy#simpleRestJson
+
+@simpleRestJson
+service BlogTrackService {
     version: "2023-09-23"
     errors: [BTError]
     operations: [NotifyNewEntry]
@@ -9,12 +12,12 @@ service BlogTrack {
 }
 
 @error("client")
-structure BTError for BlogTrack {
+structure BTError for BlogTrackService {
     @required
     reason: String
 }
 
-@http(method: "POST", uri: "/notify")
+@http(method: "POST", uri: "/notify", code: 200)
 operation NotifyNewEntry {
     input: NotifyNewEntryInput
     output: NotifyNewEntryOutput
@@ -22,13 +25,13 @@ operation NotifyNewEntry {
 }
 
 @input
-structure NotifyNewEntryInput for BlogTrack {
+structure NotifyNewEntryInput for BlogTrackService {
     @required
     citedUrl: Url
 }
 
 @output
-structure NotifyNewEntryOutput for BlogTrack {}
+structure NotifyNewEntryOutput for BlogTrackService {}
 
 resource Citation {
     identifiers: { citedUrl: Url }
