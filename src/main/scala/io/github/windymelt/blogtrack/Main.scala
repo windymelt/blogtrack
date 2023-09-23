@@ -9,6 +9,8 @@ import org.http4s.ember.server.*
 import org.http4s.implicits.*
 import smithy4s.http4s.SimpleRestJsonBuilder
 
+/** Smithyで定義したサービス定義 [[api.BlogTrackService]] を実際に実装するオブジェクト。
+  */
 object BlogTrackImpl extends BlogTrackService[IO] {
   private lazy val client =
     Neo4jClient(sys.env("NEO4J_URI"), sys.env("NEO4J_PASSWORD"))
@@ -31,6 +33,8 @@ object BlogTrackImpl extends BlogTrackService[IO] {
     )
 }
 
+/** ルーティング定義。
+  */
 object Routes {
   private val blogTracker: Resource[IO, HttpRoutes[IO]] =
     SimpleRestJsonBuilder.routes(BlogTrackImpl).resource

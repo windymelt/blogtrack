@@ -18,6 +18,7 @@ structure BTError for BlogTrackService {
     reason: String
 }
 
+@documentation("新規エントリが利用可能であることをサーバに通知する。")
 @http(method: "POST", uri: "/notify", code: 200)
 operation NotifyNewEntry {
     input: NotifyNewEntryInput
@@ -39,6 +40,7 @@ resource Citation {
     read: ReadCite
 }
 
+@documentation("あるエントリを引用しているエントリを得る。")
 @readonly
 @http(method: "GET", uri: "/cites/{citedUrl}")
 operation ReadCite {
