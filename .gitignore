@@ -4,3 +4,6 @@
 .tool-versions
 .scala-build/
 *.txt
+*.~undo-tree~
+**/target/
+.idea/

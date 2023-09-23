@@ -3,6 +3,7 @@ namespace io.github.windymelt.blogtrack.api
 
 use alloy#simpleRestJson
 
+@title("Blog track service")
 @simpleRestJson
 service BlogTrackService {
     version: "2023-09-23"
