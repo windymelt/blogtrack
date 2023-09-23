@@ -17,6 +17,11 @@ val blogtrack = project
       "io.github.neotypes" %% "neotypes-generic" % "1.0.0-M3",
       "io.github.neotypes" %% "neotypes-cats-effect" % "1.0.0-M3",
       "org.typelevel" %% "cats-effect" % "3.5.1",
-      "org.neo4j.driver" % "neo4j-java-driver" % "5.12.0",
+      "org.neo4j.driver" % "neo4j-java-driver" % "5.12.0"
+    ),
+    Compile / doc / scalacOptions ++= Seq(
+      "-social-links:github::https://github.com/windymelt/blogtrack",
+      "-siteroot",
+      "docs"
     )
   )
