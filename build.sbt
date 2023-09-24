@@ -4,9 +4,9 @@ ThisBuild / scalaVersion := "3.3.0"
 
 val smithy4sVersion = "0.17.19"
 
-val blogtrack = project
+lazy val blogtrack = project
   .in(file("."))
-  .enablePlugins(Smithy4sCodegenPlugin)
+  .dependsOn(protocol)
   .enablePlugins(PackPlugin)
   .enablePlugins(BuildInfoPlugin)
   .settings(
@@ -33,4 +33,11 @@ val blogtrack = project
     ),
     buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
     buildInfoPackage := "buildinfo",
+  )
+
+lazy val protocol = project
+  .in(file("protocol"))
+  .enablePlugins(Smithy4sCodegenPlugin)
+  .settings(
+    libraryDependencies += "com.disneystreaming.smithy4s" %% "smithy4s-core" % smithy4sVersion
   )
