@@ -5,9 +5,10 @@ use alloy#simpleRestJson
 
 @title("Blog track service")
 @simpleRestJson
+@httpBearerAuth
 service BlogTrackService {
     version: "2023-09-23"
-    errors: [BTError]
+    errors: [BTError, NotAuthorizedError]
     operations: [NotifyNewEntry]
     resources: [Citation]
 }
@@ -16,6 +17,13 @@ service BlogTrackService {
 structure BTError for BlogTrackService {
     @required
     reason: String
+}
+
+@error("client")
+@httpError(401)
+structure NotAuthorizedError {
+  @required
+  message: String
 }
 
 @documentation("新規エントリが利用可能であることをサーバに通知する。")

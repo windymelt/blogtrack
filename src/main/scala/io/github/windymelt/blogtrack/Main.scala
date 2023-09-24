@@ -43,7 +43,10 @@ object BlogTrackImpl extends BlogTrackService[IO] {
   */
 object Routes {
   private val blogTracker: Resource[IO, HttpRoutes[IO]] =
-    SimpleRestJsonBuilder.routes(BlogTrackImpl).resource
+    SimpleRestJsonBuilder
+      .routes(BlogTrackImpl)
+      .middleware(AuthMiddleware(EnvVarBearerAuthChecker))
+      .resource
   private val docs: HttpRoutes[IO] =
     smithy4s.http4s.swagger.docs[IO](BlogTrackService)
 
