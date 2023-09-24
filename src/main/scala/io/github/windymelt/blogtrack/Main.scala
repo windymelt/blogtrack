@@ -3,8 +3,8 @@ package io.github.windymelt.blogtrack
 import cats.effect.*
 import cats.implicits.*
 import com.comcast.ip4s.*
-import com.monovore.decline._
-import com.monovore.decline.effect._
+import com.monovore.decline.*
+import com.monovore.decline.effect.*
 import io.github.windymelt.blogtrack.api.*
 import org.http4s.*
 import org.http4s.ember.server.*
@@ -21,13 +21,10 @@ object BlogTrackImpl extends BlogTrackService[IO] {
     ) // TODO: use opt value
   private lazy val extractor = Extractor(sys.env("MY_BLOG_REGEX").r)
 
-  override def notifyNewEntry(entryUrl: Url): IO[NotifyNewEntryOutput] = {
-    val parsedEntry = extractor.extractLinks(entryUrl.toString)
-    for {
-      pairOpt <- parsedEntry
-      _ <- pairOpt.traverse { (node, cites) => client.putCitation(node, cites) }
-    } yield NotifyNewEntryOutput()
-  }
+  override def notifyNewEntry(entryUrl: Url): IO[NotifyNewEntryOutput] = for {
+    pairOpt <- extractor.extractLinks(entryUrl.toString)
+    _ <- pairOpt.traverse { (node, cites) => client.putCitation(node, cites) }
+  } yield NotifyNewEntryOutput()
 
   override def readCite(citedUrl: Url): IO[ReadCiteOutput] =
     for {

@@ -15,7 +15,7 @@ import scala.util.matching.Regex
   *   コンテンツ中のURLを自分のブログと判定するための正規表現。
   */
 class Extractor(myBlogRegex: Regex) {
-  lazy val browser = JsoupBrowser()
+  private lazy val browser = JsoupBrowser()
 
   /** 指定したURLのコンテンツを取得し、エントリ情報と引用情報を抽出する。
     *
