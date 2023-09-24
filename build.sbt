@@ -8,7 +8,9 @@ val blogtrack = project
   .in(file("."))
   .enablePlugins(Smithy4sCodegenPlugin)
   .enablePlugins(PackPlugin)
+  .enablePlugins(BuildInfoPlugin)
   .settings(
+    version := "0.0.1",
     libraryDependencies ++= Seq(
       "com.disneystreaming.smithy4s" %% "smithy4s-http4s" % smithy4sVersion,
       "com.disneystreaming.smithy4s" %% "smithy4s-http4s-swagger" % smithy4sVersion,
@@ -29,4 +31,6 @@ val blogtrack = project
       "-siteroot",
       "docs",
     ),
+    buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
+    buildInfoPackage := "buildinfo",
   )

@@ -59,7 +59,7 @@ object Main
     extends CommandIOApp(
       name = "blogtrack",
       header = "Track trackback inside your hatenablog",
-      version = "0.0.1",
+      version = buildinfo.BuildInfo.version,
     ) {
   override def main: Opts[IO[ExitCode]] = CliOpts.allOpts.map { opts =>
     Routes.all
