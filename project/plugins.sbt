@@ -5,3 +5,6 @@ addSbtPlugin(
 addSbtPlugin("io.spray" % "sbt-revolver" % "0.10.0")
 
 addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.4.6")
+
+// for sbt-0.13.x, sbt-1.x
+addSbtPlugin("org.xerial.sbt" % "sbt-pack" % "0.17")

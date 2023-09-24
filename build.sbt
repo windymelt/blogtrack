@@ -7,6 +7,7 @@ val smithy4sVersion = "0.17.19"
 val blogtrack = project
   .in(file("."))
   .enablePlugins(Smithy4sCodegenPlugin)
+  .enablePlugins(PackPlugin)
   .settings(
     libraryDependencies ++= Seq(
       "com.disneystreaming.smithy4s" %% "smithy4s-http4s" % smithy4sVersion,
