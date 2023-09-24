@@ -3,6 +3,8 @@ package io.github.windymelt.blogtrack
 import cats.effect.*
 import cats.implicits.*
 import com.comcast.ip4s.*
+import com.monovore.decline._
+import com.monovore.decline.effect._
 import io.github.windymelt.blogtrack.api.*
 import org.http4s.*
 import org.http4s.ember.server.*
@@ -13,7 +15,10 @@ import smithy4s.http4s.SimpleRestJsonBuilder
   */
 object BlogTrackImpl extends BlogTrackService[IO] {
   private lazy val client =
-    Neo4jClient(sys.env("NEO4J_URI"), sys.env("NEO4J_PASSWORD"))
+    Neo4jClient(
+      sys.env("NEO4J_URI"),
+      sys.env("NEO4J_PASSWORD")
+    ) // TODO: use opt value
   private lazy val extractor = Extractor(sys.env("MY_BLOG_REGEX").r)
 
   override def notifyNewEntry(entryUrl: Url): IO[NotifyNewEntryOutput] = {
@@ -53,18 +58,25 @@ object Routes {
   val all: Resource[IO, HttpRoutes[IO]] = blogTracker.map(_ <+> docs)
 }
 
-object Main extends IOApp.Simple {
-  val run = Routes.all
-    .flatMap { routes =>
-      EmberServerBuilder
-        .default[IO]
-        .withPort(port"9000")
-        .withHost(host"localhost")
-        .withHttpApp(routes.orNotFound)
-        .withShutdownTimeout(
-          scala.concurrent.duration.FiniteDuration(1, "second")
-        )
-        .build
-    }
-    .use(_ => IO.never)
+object Main
+    extends CommandIOApp(
+      name = "hello-world",
+      header = "Says hello!",
+      version = "0.0.1"
+    ) {
+  override def main: Opts[IO[ExitCode]] = CliOpts.allOpts.map { opts =>
+    Routes.all
+      .flatMap { routes =>
+        EmberServerBuilder
+          .default[IO]
+          .withPort(port"9000")
+          .withHost(host"localhost")
+          .withHttpApp(routes.orNotFound)
+          .withShutdownTimeout(
+            scala.concurrent.duration.FiniteDuration(1, "second")
+          )
+          .build
+      }
+      .use(_ => IO.never) >> IO.pure(ExitCode.Success)
+  }
 }

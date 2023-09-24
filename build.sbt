@@ -19,7 +19,9 @@ val blogtrack = project
       "org.typelevel" %% "cats-effect" % "3.5.1",
       "org.neo4j.driver" % "neo4j-java-driver" % "5.12.0",
       "org.jsoup" % "jsoup" % "1.16.1",
-      "net.ruippeixotog" %% "scala-scraper" % "3.1.0"
+      "net.ruippeixotog" %% "scala-scraper" % "3.1.0",
+      "com.monovore" %% "decline" % "2.4.1",
+      "com.monovore" %% "decline-effect" % "2.4.1"
     ),
     Compile / doc / scalacOptions ++= Seq(
       "-social-links:github::https://github.com/windymelt/blogtrack",
