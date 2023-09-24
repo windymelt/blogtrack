@@ -57,8 +57,8 @@ object Routes {
 
 object Main
     extends CommandIOApp(
-      name = "hello-world",
-      header = "Says hello!",
+      name = "blogtrack",
+      header = "Track trackback inside your hatenablog",
       version = "0.0.1",
     ) {
   override def main: Opts[IO[ExitCode]] = CliOpts.allOpts.map { opts =>
