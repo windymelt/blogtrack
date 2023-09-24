@@ -14,9 +14,14 @@ import smithy4s.http4s.SimpleRestJsonBuilder
 object BlogTrackImpl extends BlogTrackService[IO] {
   private lazy val client =
     Neo4jClient(sys.env("NEO4J_URI"), sys.env("NEO4J_PASSWORD"))
+  private lazy val extractor = Extractor(sys.env("MY_BLOG_REGEX").r)
 
-  override def notifyNewEntry(citedUrl: Url): IO[NotifyNewEntryOutput] =
-    IO.pure(NotifyNewEntryOutput()) // TODO: implement this
+  override def notifyNewEntry(entryUrl: Url): IO[NotifyNewEntryOutput] = {
+    val parsedEntry = extractor.extractLinks(entryUrl.toString)
+    for {
+      pair <- parsedEntry
+    } yield NotifyNewEntryOutput() // TODO: push to neo4j
+  }
 
   override def readCite(citedUrl: Url): IO[ReadCiteOutput] =
     for {
@@ -52,6 +57,9 @@ object Main extends IOApp.Simple {
         .withPort(port"9000")
         .withHost(host"localhost")
         .withHttpApp(routes.orNotFound)
+        .withShutdownTimeout(
+          scala.concurrent.duration.FiniteDuration(1, "second")
+        )
         .build
     }
     .use(_ => IO.never)

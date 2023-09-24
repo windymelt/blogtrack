@@ -29,7 +29,7 @@ operation NotifyNewEntry {
 @input
 structure NotifyNewEntryInput for BlogTrackService {
     @required
-    citedUrl: Url
+    entryUrl: Url
 }
 
 @output
