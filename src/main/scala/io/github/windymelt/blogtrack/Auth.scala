@@ -54,7 +54,7 @@ object AuthMiddleware {
         ifTrue = inputApp(request),
         ifFalse = IO.raiseError(
           new api.NotAuthorizedError("Not authorized! You need Bearer Token.")
-        )
+        ),
       )
     }
   }
@@ -67,7 +67,7 @@ object AuthMiddleware {
       )
       def prepareWithHints(
           serviceHints: Hints,
-          endpointHints: Hints
+          endpointHints: Hints,
       ): HttpApp[IO] => HttpApp[IO] = {
         // If service requires auth, do auth.
         // If endpoint doesn't require auth, avoid auth.

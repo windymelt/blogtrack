@@ -8,7 +8,7 @@ case class CliOpts(
     neo4jUri: String,
     neo4jPassword: String,
     myBlogRegex: Regex,
-    bearerToken: String
+    bearerToken: String,
 )
 
 object CliOpts {
@@ -17,7 +17,7 @@ object CliOpts {
     Opts.env[String]("NEO4J_PASSWORD", "Password for Neo4j instance")
   private def myBlogRegex = Opts.env[String](
     "MY_BLOG_REGEX",
-    "Regex to distinguish url is your blog or not"
+    "Regex to distinguish url is your blog or not",
   )
   private def bearerToken =
     Opts.env[String]("BEARER_TOKEN", "Bearer Token for authentication")

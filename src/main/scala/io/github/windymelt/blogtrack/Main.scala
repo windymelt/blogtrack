@@ -17,7 +17,7 @@ object BlogTrackImpl extends BlogTrackService[IO] {
   private lazy val client =
     Neo4jClient(
       sys.env("NEO4J_URI"),
-      sys.env("NEO4J_PASSWORD")
+      sys.env("NEO4J_PASSWORD"),
     ) // TODO: use opt value
   private lazy val extractor = Extractor(sys.env("MY_BLOG_REGEX").r)
 
@@ -36,7 +36,7 @@ object BlogTrackImpl extends BlogTrackService[IO] {
           .map(n =>
             Article(title = n.title, url = Url(n.url), tags = n.tags.toList)
           )
-          .toList
+          .toList,
       )
     )
 }
@@ -59,7 +59,7 @@ object Main
     extends CommandIOApp(
       name = "hello-world",
       header = "Says hello!",
-      version = "0.0.1"
+      version = "0.0.1",
     ) {
   override def main: Opts[IO[ExitCode]] = CliOpts.allOpts.map { opts =>
     Routes.all

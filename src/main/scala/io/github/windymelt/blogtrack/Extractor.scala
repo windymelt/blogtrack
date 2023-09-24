@@ -48,7 +48,7 @@ class Extractor(myBlogRegex: Regex) {
             url = url,
             title = title,
             tags = tags,
-            updatedAt = updatedAt
+            updatedAt = updatedAt,
           ) -> cites.toSeq
         )
       } else {

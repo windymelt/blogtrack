@@ -57,7 +57,7 @@ merge (b:Article {url:"$c"})
 merge (a) -[c:CITE]-> (b)
   on create set a.title = "${node.title.replaceAll(
           "\"",
-          "\\\""
+          "\\\"",
         )}", a.updatedAt = datetime("${node.updatedAt.toString}"), a.tags = ${node.tags
           .map(t => s"\"${t}\"")
           .mkString("[", ",", "]")}

@@ -15,5 +15,5 @@ case class Node(
     url: String,
     title: String,
     tags: Seq[String],
-    updatedAt: java.time.ZonedDateTime
+    updatedAt: java.time.ZonedDateTime,
 )
