@@ -19,8 +19,9 @@ object BlogTrackImpl extends BlogTrackService[IO] {
   override def notifyNewEntry(entryUrl: Url): IO[NotifyNewEntryOutput] = {
     val parsedEntry = extractor.extractLinks(entryUrl.toString)
     for {
-      pair <- parsedEntry
-    } yield NotifyNewEntryOutput() // TODO: push to neo4j
+      pairOpt <- parsedEntry
+      _ <- pairOpt.traverse { (node, cites) => client.putCitation(node, cites) }
+    } yield NotifyNewEntryOutput()
   }
 
   override def readCite(citedUrl: Url): IO[ReadCiteOutput] =
