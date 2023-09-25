@@ -35,6 +35,8 @@ lazy val blogtrack = project
     buildInfoPackage := "buildinfo",
   )
 
+lazy val widget = project.in(file("widget")).dependsOn(protocol)
+
 lazy val protocol = project
   .in(file("protocol"))
   .enablePlugins(Smithy4sCodegenPlugin)
