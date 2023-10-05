@@ -8,7 +8,6 @@ import scala.scalajs.js.annotation.*
 import scala.concurrent.Future
 import concurrent.ExecutionContext.Implicits.global
 import cats.effect.unsafe.implicits.global
-
 import org.scalajs.dom
 
 // import javascriptLogo from "/javascript.svg"
@@ -16,7 +15,8 @@ import org.scalajs.dom
 val javascriptLogo: String = js.native
 
 val citationApiUrl = "http://localhost:8080/citations"
-val myBlogRegex = """https://blog\.3qe\.us/.*|http://localhost.*|http://127\.0\.0\.1.*""".r
+val myBlogRegex =
+  """https://blog\.3qe\.us/.*|http://localhost.*|http://127\.0\.0\.1.*""".r
 
 @main
 def Main(): Unit =
@@ -49,22 +49,28 @@ object Widget {
       "Scala.js",
       "https://www.scala-js.org/",
       "Scala.js compiles Scala code to JavaScript, allowing you to write your Web application entirely in Scala! It aims at seamless integration with JavaScript libraries and an easy development cycle, in order to get you productive as fast as possible.",
-        tags = Seq("scala", "javascript"),
+      tags = Seq("scala", "javascript"),
     ),
   )
 
-  val citationVar: Var[Seq[Citation]] = Var(citations)
+  val citationVar: Var[Option[Seq[Citation]]] = Var(None)
 
   def getCitations(): Future[Seq[Citation]] = { // stub
-    val currentUrl = dom.window.location.href
+    // val currentUrl = dom.window.location.href
+    val currentUrl =
+      "https://blog.3qe.us/entry/2022/10/10/120114" // TODO: use href by prod or not
     currentUrl match {
       case myBlogRegex() =>
         val io = BlogTrackClient.blogTrackClient.use { c =>
           c.readCite(api.Url(currentUrl))
         }
         io.unsafeToFuture()
-        Future.successful(citations)
-      case _             => Future.failed(new Exception("Not my blog"))
+          .map(
+            _.citation.whatCitedMe.map(cit =>
+              Citation(cit.title, cit.url.toString, "", cit.tags)
+            )
+          )
+      case _ => Future.failed(new Exception("Not my blog"))
     }
   }
   def appElement: Element = div(
@@ -72,20 +78,33 @@ object Widget {
     div(
       cls := "content",
       div(
+        cls <-- citationVar.signal.map {
+          case Some(_) => "ui inverted dimmer"
+          case None    => "ui active inverted dimmer"
+        },
+        div(
+          cls := "ui text loader",
+          "Loading",
+        ),
+      ),
+      div(
         div(
           cls := "header",
           "This article is cited by:",
         ),
         cls := "ui relaxed divided list",
-        children <-- citationVar.signal.map(
-          _.map(citationElement),
-        ),
+        children <-- citationVar.signal.map { opt =>
+          opt match {
+            case Some(cit) => cit.map(citationElement)
+            case None      => Seq()
+          }
+        },
         Signal.fromFuture(getCitations()) --> { citations =>
           citations match {
-            case Some(citations) => citationVar.set(citations)
+            case Some(citations) => citationVar.set(Some(citations))
             case None            => // TODO: error handling
           }
-        }
+        },
       ),
     ),
   )
@@ -103,7 +122,7 @@ object Widget {
           div(
             cls := "header",
             i(
-              cls := "linkify icon",
+              cls := "linkify icon"
             ),
             a(citation.title),
             citation.tags.map { tag =>
@@ -118,8 +137,7 @@ object Widget {
             citation.description,
           ),
         ),
-      )
-
+      ),
     )
   }
 }

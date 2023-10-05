@@ -10,6 +10,7 @@ import org.http4s.*
 import org.http4s.ember.server.*
 import org.http4s.implicits.*
 import smithy4s.http4s.SimpleRestJsonBuilder
+import org.http4s.server.middleware.CORS
 
 /** Smithyで定義したサービス定義 [[api.BlogTrackService]] を実際に実装するオブジェクト。
   */
@@ -68,7 +69,7 @@ object Main
           .default[IO]
           .withPort(port"9000")
           .withHost(host"localhost")
-          .withHttpApp(routes.orNotFound)
+          .withHttpApp(CORS(routes.orNotFound))
           .withShutdownTimeout(
             scala.concurrent.duration.FiniteDuration(1, "second")
           )
