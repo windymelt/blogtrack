@@ -1,4 +1,5 @@
-package io.github.windymelt.blogtrack.widget
+package io.github.windymelt.blogtrack
+package widget
 
 import com.raquo.laminar.api.L.{*, given}
 
@@ -56,7 +57,12 @@ object Widget {
   def getCitations(): Future[Seq[Citation]] = { // stub
     val currentUrl = dom.window.location.href
     currentUrl match {
-      case myBlogRegex() => Future.successful(citations)
+      case myBlogRegex() =>
+        val io = Client.blogTrackClient.use { c =>
+          c.readCite(api.Url(currentUrl))
+        }
+
+        Future.successful(citations)
       case _             => Future.failed(new Exception("Not my blog"))
     }
   }
