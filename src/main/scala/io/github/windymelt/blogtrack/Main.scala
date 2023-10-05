@@ -68,7 +68,7 @@ object Main
         EmberServerBuilder
           .default[IO]
           .withPort(port"9000")
-          .withHost(host"localhost")
+          .withHost(host"0.0.0.0")
           .withHttpApp(CORS(routes.orNotFound))
           .withShutdownTimeout(
             scala.concurrent.duration.FiniteDuration(1, "second")
