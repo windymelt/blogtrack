@@ -7,6 +7,7 @@ import scala.scalajs.js
 import scala.scalajs.js.annotation.*
 import scala.concurrent.Future
 import concurrent.ExecutionContext.Implicits.global
+import cats.effect.unsafe.implicits.global
 
 import org.scalajs.dom
 
@@ -58,10 +59,10 @@ object Widget {
     val currentUrl = dom.window.location.href
     currentUrl match {
       case myBlogRegex() =>
-        val io = Client.blogTrackClient.use { c =>
+        val io = BlogTrackClient.blogTrackClient.use { c =>
           c.readCite(api.Url(currentUrl))
         }
-
+        io.unsafeToFuture()
         Future.successful(citations)
       case _             => Future.failed(new Exception("Not my blog"))
     }
