@@ -6,6 +6,8 @@ Blogtrackを使うことで、はてなブログ内の記事の引用関係を�
 
 Blogtrackは3(4)つのコンポーネントで構成されています。
 
+![arghitecture](blogtrack.png)
+
 ### Server
 
 プロジェクトルートがServerです。Serverは後述する**Widget**コンポーネントからのAPIリクエストを受信し、記事の引用情報を返却します。このためにServerはNeo4jサーバと通信します。また、Serverは後述する**Notifier**からの通知を受信して、新たな引用情報の更新を行います。
