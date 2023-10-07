@@ -10,11 +10,8 @@ import concurrent.ExecutionContext.Implicits.global
 import cats.effect.unsafe.implicits.global
 import org.scalajs.dom
 
-// import javascriptLogo from "/javascript.svg"
-@js.native @JSImport("/javascript.svg", JSImport.Default)
-val javascriptLogo: String = js.native
-
 val citationApiUrl = "http://localhost:8080/citations"
+val bearerToken = ""
 val myBlogRegex =
   """https://blog\.3qe\.us/.*|http://localhost.*|http://127\.0\.0\.1.*""".r
 
@@ -33,26 +30,6 @@ object Widget {
       tags: Seq[String] = Seq(),
   )
 
-  val citations = Seq(
-    Citation(
-      "JavaScript",
-      "https://developer.mozilla.org/en-US/docs/Web/JavaScript",
-      "JavaScript (JS) is a lightweight, interpreted, or just-in-time compiled programming language with first-class functions. While it is most well-known as the scripting language for Web pages, many non-browser environments also use it, such as Node.js, Apache CouchDB and Adobe Acrobat. JavaScript is a prototype-based, multi-paradigm, single-threaded, dynamic language, supporting object-oriented, imperative, and declarative (e.g. functional programming) styles.",
-    ),
-    Citation(
-      "Scala",
-      "https://www.scala-lang.org/",
-      "Scala combines object-oriented and functional programming in one concise, high-level language. Scala's static types help avoid bugs in complex applications, and its JVM and JavaScript runtimes let you build high-performance systems with easy access to huge ecosystems of libraries.",
-      tags = Seq("scala"),
-    ),
-    Citation(
-      "Scala.js",
-      "https://www.scala-js.org/",
-      "Scala.js compiles Scala code to JavaScript, allowing you to write your Web application entirely in Scala! It aims at seamless integration with JavaScript libraries and an easy development cycle, in order to get you productive as fast as possible.",
-      tags = Seq("scala", "javascript"),
-    ),
-  )
-
   val citationVar: Var[Option[Seq[Citation]]] = Var(None)
 
   def getCitations(): Future[Seq[Citation]] = { // stub
@@ -61,9 +38,11 @@ object Widget {
       "https://blog.3qe.us/entry/2022/10/10/120114" // TODO: use href by prod or not
     currentUrl match {
       case myBlogRegex() =>
-        val io = BlogTrackClient.blogTrackClient.use { c =>
-          c.readCite(api.Url(currentUrl))
-        }
+        val io =
+          BlogTrackClient.blogTrackClient(citationApiUrl, bearerToken).use {
+            c =>
+              c.readCite(api.Url(currentUrl))
+          }
         io.unsafeToFuture()
           .map(
             _.citation.whatCitedMe.map(cit =>
