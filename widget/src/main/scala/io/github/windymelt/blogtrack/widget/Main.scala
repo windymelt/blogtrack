@@ -9,7 +9,6 @@ import scala.concurrent.Future
 import concurrent.ExecutionContext.Implicits.global
 import cats.effect.unsafe.implicits.global
 import org.scalajs.dom
-import typings.fomanticUi
 import FomanticUI as F
 
 val citationApiUrl = "http://localhost:8080/citations"
