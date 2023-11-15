@@ -60,6 +60,7 @@ import org.scalajs.linker.interface.ModuleSplitStyle
 
 lazy val widget = projectMatrix
   .in(file("widget"))
+  .enablePlugins(ScalablyTypedConverterExternalNpmPlugin)
   .jsPlatform(Seq(ScalaVersion))
   .defaultAxes(defaults*)
   .dependsOn(protocol)
@@ -83,6 +84,7 @@ lazy val widget = projectMatrix
           ModuleSplitStyle.SmallModulesFor(List("widget")))
         .withOutputPatterns(OutputPatterns.fromJSFile("%s.js"))
     },
+    externalNpm := baseDirectory.value / "../../../widget",
 
     /* Depend on the scalajs-dom library.
      * It provides static types for the browser DOM APIs.

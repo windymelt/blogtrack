@@ -9,6 +9,7 @@ import scala.concurrent.Future
 import concurrent.ExecutionContext.Implicits.global
 import cats.effect.unsafe.implicits.global
 import org.scalajs.dom
+import FomanticUI as F
 
 val citationApiUrl = "http://localhost:8080/citations"
 val bearerToken = ""
@@ -29,7 +30,7 @@ object Widget {
       description: String,
       tags: Seq[String] = Seq(),
   )
-
+  
   val citationVar: Var[Option[Seq[Citation]]] = Var(None)
 
   def getCitations(): Future[Seq[Citation]] = { // stub
@@ -53,25 +54,25 @@ object Widget {
     }
   }
   def appElement: Element = div(
-    cls := "ui card container",
+    cls := s"${F.ui} ${F.card} ${F.container}",
     div(
-      cls := "content",
+      cls := F.content,
       div(
         cls <-- citationVar.signal.map {
-          case Some(_) => "ui inverted dimmer"
-          case None    => "ui active inverted dimmer"
+          case Some(_) => s"${F.ui} ${F.inverted} ${F.dimmer}"
+          case None    => s"${F.ui} ${F.active} ${F.inverted} ${F.dimmer}"
         },
         div(
-          cls := "ui text loader",
+          cls := s"${F.ui} ${F.text} ${F.loader}",
           "Loading",
         ),
       ),
       div(
         div(
-          cls := "header",
+          cls := F.header,
           "This article is cited by:",
         ),
-        cls := "ui relaxed divided list",
+        cls := s"${F.ui} ${F.relaxed} ${F.divided} ${F.list}",
         children <-- citationVar.signal.map { opt =>
           opt match {
             case Some(cit) => cit.map(citationElement)
@@ -92,27 +93,27 @@ object Widget {
       citation: Citation
   ): Element = {
     div(
-      cls := "item",
+      cls := F.item,
       a(
         href := citation.url,
         target := "_blank",
         div(
-          cls := "content",
+          cls := F.content,
           div(
-            cls := "header",
+            cls := F.header,
             i(
-              cls := "linkify icon"
+              cls := s"${F.linkify} ${F.icon}"
             ),
             a(citation.title),
             citation.tags.map { tag =>
               span(
-                cls := "ui label",
+                cls := s"${F.ui} ${F.label}",
                 tag,
               )
             },
           ),
           div(
-            cls := "description",
+            cls := F.description,
             citation.description,
           ),
         ),
