@@ -13,10 +13,8 @@
   },
   "devDependencies": {
     "@scala-js/vite-plugin-scalajs": "^1.0.0",
+    "@raquo/vite-plugin-glob-resolver": "^0.1.0",
     "typescript": "^5.2.2",
     "vite": "^4.1.0"
-  },
-  "dependencies": {
-    "fomantic-ui": "^2.9.3"
   }
 }

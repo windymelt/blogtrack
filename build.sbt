@@ -79,7 +79,7 @@ lazy val widget = projectMatrix
      *   (in particular, for the standard library)
      */
     scalaJSLinkerConfig ~= {
-      _.withModuleKind(ModuleKind.CommonJSModule)
+      _.withModuleKind(ModuleKind.ESModule)
         .withModuleSplitStyle(
           ModuleSplitStyle.SmallModulesFor(List("widget")))
         .withOutputPatterns(OutputPatterns.fromJSFile("%s.js"))
